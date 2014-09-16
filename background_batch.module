@@ -1,0 +1,79 @@
+<?php
+
+/**
+ * @file
+ * Batch background module.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function background_batch_menu() {
+  $items = array();
+
+  return $items;
+}
+
+/**
+ * Implements hook_entity_info().
+ */
+function background_batch_entity_info() {
+  $items = array();
+
+  $items['batch'] = array(
+    'label' => t('Batch'),
+    'controller class' => 'EntityAPIController',
+    'entity class' => 'BatchBackground',
+    'base table' => 'batch',
+    'entity keys' => array(
+      'id' => 'mid',
+      // The message has no label.
+    ),
+    'module' => 'message',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_init().
+ *
+ * Injecting the variables to the JS.
+ */
+function batch_background_init() {
+
+}
+
+/**
+ * Load multiple batch background entities.
+ *
+ * @param $ids
+ *   Array of IDS.
+ *
+ * @return BatchBackground[]
+ */
+function batch_background_load_multiple($ids) {
+  return entity_load('batch_background', $ids);
+}
+
+/**
+ * Load a single instance of batch background entity.
+ *
+ * @param $id
+ *   Batch background entity background.
+ *
+ * @return BatchBackground
+ */
+function batch_background_load($id) {
+  return entity_load_single('batch_background', $id);
+}
+
+/**
+ * Delete multiple batch background entities.
+ *
+ * @param $ids
+ *   Array of batch background IDs.
+ */
+function background_bacground_delete_multiple($ids) {
+  entity_delete_multiple('batch_background', $ids);
+}

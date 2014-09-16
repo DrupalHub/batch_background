@@ -1,0 +1,5 @@
+name = "Batch background"
+description = "Process batch via JS"
+core = 7.x
+
+files[] = includes/BatchBackground.entity.inc
