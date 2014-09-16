@@ -27,7 +27,6 @@ function background_batch_entity_info() {
     'base table' => 'batch',
     'entity keys' => array(
       'id' => 'mid',
-      // The message has no label.
     ),
     'module' => 'message',
   );

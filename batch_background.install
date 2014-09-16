@@ -33,9 +33,6 @@ function batch_background_schema() {
       ),
     ),
     'primary key' => array('bid'),
-    'indexes' => array(
-      'token' => array('token'),
-    ),
   );
 
   return $schema;
