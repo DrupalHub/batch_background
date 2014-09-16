@@ -6,41 +6,33 @@
  */
 
 /**
- * Implements hook_menu().
- */
-function background_batch_menu() {
-  $items = array();
-
-  return $items;
-}
-
-/**
  * Implements hook_entity_info().
  */
-function background_batch_entity_info() {
+function batch_background_entity_info() {
   $items = array();
 
-  $items['batch'] = array(
+  $items['batch_background'] = array(
     'label' => t('Batch'),
     'controller class' => 'EntityAPIController',
     'entity class' => 'BatchBackground',
-    'base table' => 'batch',
+    'base table' => 'batch_background',
     'entity keys' => array(
-      'id' => 'mid',
+      'id' => 'bid',
     ),
-    'module' => 'message',
+    'module' => 'batch_background',
   );
 
   return $items;
 }
 
 /**
- * Implements hook_init().
+ * Create a batch background entity.
  *
- * Injecting the variables to the JS.
+ * @return BatchBackground
+ *   An unsaved batch background object.
  */
-function batch_background_init() {
-
+function batch_background_create() {
+  return entity_create('batch_background', array());
 }
 
 /**
@@ -73,6 +65,78 @@ function batch_background_load($id) {
  * @param $ids
  *   Array of batch background IDs.
  */
-function background_bacground_delete_multiple($ids) {
+function batch_background_delete_multiple($ids) {
   entity_delete_multiple('batch_background', $ids);
+}
+
+/**
+ * Implements hook_menu().
+ */
+function batch_background_menu() {
+  $items = array();
+
+  $items['batch_background/process/%batch_background/%'] = array(
+    'title' => 'Batch background process callback',
+    'access callback' => TRUE,
+    'page_callback' => 'batch_background_process',
+    'page_arguments' => array(2,3),
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_init().
+ *
+ * Injecting the variables to the JS.
+ */
+function batch_background_init() {
+  if (!$batches = batch_background_get_all_batches()) {
+    return;
+  }
+
+  // Setting the information for the JS part.
+  $callbacks = array();
+  foreach ($batches as $batch) {
+    $callbacks = array_merge($callbacks, array(array($batch->bid, $batch->delta)));
+  }
+
+  drupal_add_js(
+    array('batch_background' => $callbacks),
+    array('type' => 'setting')
+  );
+
+  drupal_add_js(drupal_get_path('module', 'batch_background') . '/js/batch_background.js');
+}
+
+/**
+ * Menu callback; Execute the callbacks from the background batch.
+ *
+ * @param BatchBackground $batch
+ *   The batch object.
+ * @param $delta
+ *   The delta of the callback. When the process is done yet we need to save the
+ *   last delta of the operations we processed.
+ */
+function batch_background_process($batch, $delta) {
+
+}
+
+/**
+ * Get all the batches.
+ *
+ * @return BatchBackground[]
+ */
+function batch_background_get_all_batches() {
+  $query = new EntityFieldQuery();
+
+  $results = $query
+    ->entityCondition('entity_type', 'batch_background')
+    ->execute();
+
+  if (empty($results['batch_background'])) {
+    return;
+  }
+
+  return batch_background_load_multiple(array_keys($results['batch_background']));
 }

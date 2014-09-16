@@ -16,7 +16,7 @@ function batch_background_schema() {
     'fields' => array(
       'bid' => array(
         'description' => 'Primary Key: Unique batch ID.',
-        'type' => 'int',
+        'type' => 'serial',
         'unsigned' => TRUE,
         'not null' => TRUE,
       ),
@@ -30,6 +30,7 @@ function batch_background_schema() {
         'type' => 'blob',
         'not null' => FALSE,
         'size' => 'big',
+        'serialize' => TRUE,
       ),
     ),
     'primary key' => array('bid'),

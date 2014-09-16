@@ -1,0 +1,8 @@
+name = Batch background example
+description = Show the standard use cases for the batch background module.
+core = 7.x
+
+dependencies[] = batch_background
+dependencies[] = message
+dependencies[] = message_example
+dependencies[] = message_notify

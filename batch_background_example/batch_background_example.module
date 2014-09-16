@@ -1,0 +1,50 @@
+<?php
+/**
+ * @file
+ * batch_background_example.module
+ */
+
+/**
+ * Implements hook_comment_save().
+ */
+function batch_background_example_comment_insert($comment) {
+  // One of the best use cases for this is sending E-mails in the background.
+  // The message and the message notify module, using the message example, will
+  // display a good use case for how we can send a lot of emails.
+  batch_background_create()
+    ->AddCallback('batch_background_example_send_message', array($comment))
+    ->save();
+}
+
+/**
+ * Batch background callback; Send a message to the user.
+ *
+ * @see message_notify_example_comment_insert().
+ */
+function batch_background_example_send_message($comment) {
+  $node = node_load($comment->nid);
+  if ($comment->uid == $node->uid) {
+    // The comment author is also the node author, and we would ususally
+    // return early here, but since this is an example, we send an email
+    // anyway.
+  }
+
+  // Create a new message, assigned to the node author, and add a
+  // reference to the comment, so we can later use tokens related to that
+  // comment.
+  $message = message_create('comment_insert', array('uid' => $node->uid));
+  $wrapper = entity_metadata_wrapper('message', $message);
+  $wrapper->field_comment_ref->set($comment);
+
+  // Let message-notify deliver the email, and send the message for us.
+  // We pass in the options the field names, that will be used to capture
+  // the rendered message, and provide an email log.
+  $options = array(
+    'rendered fields' => array(
+      'message_notify_email_subject' => 'field_message_rendered_subject',
+      'message_notify_email_body' => 'field_message_rendered_body',
+    ),
+  );
+
+  message_notify_send_message($message, $options);
+}
