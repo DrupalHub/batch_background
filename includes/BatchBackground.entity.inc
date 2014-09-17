@@ -34,4 +34,17 @@ class BatchBackground extends Entity {
     $this->batch[] = array($callback, $arguments);
     return $this;
   }
+
+  /**
+   * Overrides parent::save().
+   */
+  public function save() {
+    if ($this->delta >= count($this->batch)) {
+      // We are in the last batch operation so we need to delete the current
+      // instance.
+      $this->delete();
+    }
+
+    parent::save();
+  }
 }

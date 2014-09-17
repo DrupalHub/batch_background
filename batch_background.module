@@ -78,8 +78,8 @@ function batch_background_menu() {
   $items['batch_background/process/%batch_background/%'] = array(
     'title' => 'Batch background process callback',
     'access callback' => TRUE,
-    'page_callback' => 'batch_background_process',
-    'page_arguments' => array(2,3),
+    'page callback' => 'batch_background_callback_process',
+    'page arguments' => array(2,3),
   );
 
   return $items;
@@ -118,8 +118,17 @@ function batch_background_init() {
  *   The delta of the callback. When the process is done yet we need to save the
  *   last delta of the operations we processed.
  */
-function batch_background_process($batch, $delta) {
+function batch_background_callback_process($batch, $delta) {
+  // Starting from the last position.
+  $callbacks = array_slice($batch->batch, $delta);
 
+  foreach ($callbacks as $delta => $info) {
+    call_user_func_array($info[0], $info[1]);
+  }
+
+  $batch->delta = $delta;
+
+  $batch->save();
 }
 
 /**
