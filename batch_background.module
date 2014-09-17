@@ -101,8 +101,9 @@ function batch_background_init() {
     $callbacks = array_merge($callbacks, array(array($batch->bid, $batch->delta)));
   }
 
+
   drupal_add_js(
-    array('batch_background' => $callbacks),
+    array('batch_background' => $callbacks, 'base_url' => url('', array('absolute' => TRUE))),
     array('type' => 'setting')
   );
 
@@ -122,11 +123,10 @@ function batch_background_callback_process($batch, $delta) {
   // Starting from the last position.
   $callbacks = array_slice($batch->batch, $delta);
 
-  foreach ($callbacks as $delta => $info) {
+  foreach ($callbacks as $info) {
     call_user_func_array($info[0], $info[1]);
+    $batch->delta++;
   }
-
-  $batch->delta = $delta;
 
   $batch->save();
 }

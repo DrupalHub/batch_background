@@ -43,6 +43,7 @@ class BatchBackground extends Entity {
       // We are in the last batch operation so we need to delete the current
       // instance.
       $this->delete();
+      return;
     }
 
     parent::save();

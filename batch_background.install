@@ -32,6 +32,10 @@ function batch_background_schema() {
         'size' => 'big',
         'serialize' => TRUE,
       ),
+      'delta' => array(
+        'description' => 'Holds the delta of the last batch callback.',
+        'type' => 'int',
+      ),
     ),
     'primary key' => array('bid'),
   );

@@ -10,7 +10,7 @@
       var callbacks = settings.batch_background;
 
       $.each(callbacks, function(index, value) {
-        $.get('batch_background/process/' + value[0] + '/' + value[1]);
+        $.get(settings.base_url + '?q=batch_background/process/' + value[0] + '/' + value[1]);
       });
 
     }
